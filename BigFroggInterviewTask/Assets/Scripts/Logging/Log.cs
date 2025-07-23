@@ -13,6 +13,7 @@ namespace BigFroggInterviewTask.Logging
         /// </summary>
         public enum Flag
         {
+            WorldModelTrace,
         };
 
         /// <summary>
