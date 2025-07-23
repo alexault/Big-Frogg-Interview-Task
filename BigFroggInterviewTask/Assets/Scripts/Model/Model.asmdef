@@ -1,0 +1,16 @@
+{
+    "name": "Model",
+    "rootNamespace": "",
+    "references": [
+        "GUID:19e1e1e711486634f92deff7e42165d0"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
