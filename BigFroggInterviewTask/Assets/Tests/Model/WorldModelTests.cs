@@ -2,6 +2,7 @@ using BigFroggInterviewTask.Logging;
 using BigFroggInterviewTask.Model;
 using NUnit.Framework;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace BigFroggInterviewTask.Tests.Model
@@ -27,6 +28,14 @@ namespace BigFroggInterviewTask.Tests.Model
         public class TestEntity : EntityModel
         {
             public override string Name { get { return "TestEntity"; } }
+        }
+
+        /// <summary>
+        /// A simple entity type used for testing.
+        /// </summary>
+        public class TestEntityDifferentType : EntityModel
+        {
+            public override string Name { get { return "TestEntityDifferentType"; } }
         }
 
         /// <summary>
@@ -188,5 +197,81 @@ namespace BigFroggInterviewTask.Tests.Model
             Assert.That(world.GetEntityAt(location1), Is.Null);
             Assert.That(world.GetEntityAt(location2), Is.EqualTo(entity));
         }
+
+        /// <summary>
+        /// Verify that a list of all entities of a specific type can be retreived.
+        /// </summary>
+        [Test]
+        public void VerifyThatEntityListCanBeRetreived()
+        {
+            LoadWorldFromConfig(DefaultWorldConfiguration);
+
+            // Add entities of two different types to the world
+            TestEntity entity1 = new TestEntity();
+            Vector2Int location1 = new Vector2Int(0, 0);
+            TestEntity entity2 = new TestEntity();
+            Vector2Int location2 = new Vector2Int(1, 1);
+            TestEntityDifferentType entity3 = new TestEntityDifferentType();
+            Vector2Int location3 = new Vector2Int(2, 2);
+            world.AddEntity(entity1, location1);
+            world.AddEntity(entity2, location2);
+            world.AddEntity(entity3, location3);
+
+            // Get the list of all entities of TestEntity type
+            Dictionary<Vector2Int, TestEntity> allTestEntities = world.GetAllEntities<TestEntity>();
+
+            // Verify that the list includes both TestEntities
+            Assert.That(allTestEntities.Count, Is.EqualTo(2));
+            Assert.That(allTestEntities.ContainsKey(location1), Is.True);
+            Assert.That(allTestEntities.ContainsKey(location2), Is.True);
+            Assert.That(allTestEntities.ContainsValue(entity1), Is.True);
+            Assert.That(allTestEntities.ContainsValue(entity2), Is.True);
+            Assert.That(allTestEntities[location1], Is.EqualTo(entity1));
+            Assert.That(allTestEntities[location2], Is.EqualTo(entity2));
+
+            // Verify that the list does not include different types of entities 
+            Assert.That(allTestEntities.ContainsKey(location3), Is.False);
+        }
+
+        /// <summary>
+        /// Verify that a list of all empty tiles can be retreived.
+        /// </summary>
+        [Test]
+        public void VerifyThatEmptyTileListCanBeRetreived()
+        {
+            LoadWorldFromConfig(DefaultWorldConfiguration);
+
+            // Add some entities to the world
+            TestEntity entity1 = new TestEntity();
+            Vector2Int location1 = new Vector2Int(0, 0);
+            TestEntity entity2 = new TestEntity();
+            Vector2Int location2 = new Vector2Int(1, 1);
+            TestEntityDifferentType entity3 = new TestEntityDifferentType();
+            Vector2Int location3 = new Vector2Int(2, 2);
+            world.AddEntity(entity1, location1);
+            world.AddEntity(entity2, location2);
+            world.AddEntity(entity3, location3);
+
+            // Get the list of all empty tiles
+            List<Vector2Int> allEmptyTiles = world.GetAllEmptyTiles();
+
+            // Verify that the list includes all empty tiles
+            Assert.That(allEmptyTiles.Count, Is.EqualTo(9));
+            Assert.That(allEmptyTiles.Contains(new Vector2Int(0, 1)), Is.True);
+            Assert.That(allEmptyTiles.Contains(new Vector2Int(0, 2)), Is.True);
+            Assert.That(allEmptyTiles.Contains(new Vector2Int(0, 3)), Is.True);
+            Assert.That(allEmptyTiles.Contains(new Vector2Int(1, 0)), Is.True);
+            Assert.That(allEmptyTiles.Contains(new Vector2Int(1, 2)), Is.True);
+            Assert.That(allEmptyTiles.Contains(new Vector2Int(1, 3)), Is.True);
+            Assert.That(allEmptyTiles.Contains(new Vector2Int(2, 0)), Is.True);
+            Assert.That(allEmptyTiles.Contains(new Vector2Int(2, 1)), Is.True);
+            Assert.That(allEmptyTiles.Contains(new Vector2Int(2, 3)), Is.True);
+
+            // Verify that the list does not include any occupied tiles
+            Assert.That(allEmptyTiles.Contains(location1), Is.False);
+            Assert.That(allEmptyTiles.Contains(location2), Is.False);
+            Assert.That(allEmptyTiles.Contains(location3), Is.False);
+        }
+
     }
 }

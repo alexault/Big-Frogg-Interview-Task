@@ -1,5 +1,6 @@
 using BigFroggInterviewTask.Logging;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace BigFroggInterviewTask.Model
@@ -83,6 +84,50 @@ namespace BigFroggInterviewTask.Model
             }
 
             return false;
+        }
+
+        /// <summary>
+        /// Gets a list of all entities of a given type in the world and their locations.
+        /// </summary>
+        /// <returns>A dictionary mapping all entities of the given type to their location in the world.</returns>
+        public Dictionary<Vector2Int, T> GetAllEntities<T>() where T : EntityModel
+        {
+            Dictionary<Vector2Int, T> entityList = new Dictionary<Vector2Int, T>();
+
+            for (int x = 0; x < Size.x; x++)
+            {
+                for (int y = 0; y < Size.y; y++)
+                {
+                    if (tiles[x, y] is T)
+                    {
+                        entityList[new Vector2Int(x, y)] = tiles[x, y] as T;
+                    }
+                }
+            }
+
+            return entityList;
+        }
+
+        /// <summary>
+        /// Gets a list of all tiles in the world not occupied by any entity.
+        /// </summary>
+        /// <returns>A list of the locations of all unoccupied tiles in the world.</returns>
+        public List<Vector2Int> GetAllEmptyTiles()
+        {
+            List<Vector2Int> emptyTiles = new List<Vector2Int>();
+
+            for (int x = 0; x < Size.x; x++)
+            {
+                for (int y = 0; y < Size.y; y++)
+                {
+                    if (tiles[x, y] == null)
+                    {
+                        emptyTiles.Add(new Vector2Int(x, y));
+                    }
+                }
+            }
+
+            return emptyTiles;
         }
 
         /// <summary>
