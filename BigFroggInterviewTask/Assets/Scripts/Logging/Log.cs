@@ -14,6 +14,7 @@ namespace BigFroggInterviewTask.Logging
         public enum Flag
         {
             WorldModelTrace,
+            RandomBoxSpawnerModelTrace,
         };
 
         /// <summary>

@@ -24,6 +24,11 @@ namespace BigFroggInterviewTask.Model
         public Vector2Int Size { get; }
 
         /// <summary>
+        /// The list of entity spawners in the world.
+        /// </summary>
+        public List<EntitySpawnerModel> Spawners { get; }
+
+        /// <summary>
         /// The tile matrix representing the game world and the entities occupying each tile.
         /// </summary>
         private EntityModel[,] tiles;
@@ -42,7 +47,19 @@ namespace BigFroggInterviewTask.Model
             }
 
             Size = config.Size;
+            Spawners = new List<EntitySpawnerModel>();
             tiles = new EntityModel[Size.x, Size.y];
+        }
+
+        /// <summary>
+        /// Run the world logic and update its state.
+        /// </summary>
+        public void Update()
+        {
+            foreach (EntitySpawnerModel spawner in Spawners)
+            {
+                spawner.Update(this);
+            }
         }
 
         /// <summary>
