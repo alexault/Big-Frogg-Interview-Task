@@ -12,12 +12,12 @@ namespace BigFroggInterviewTask.Model.StateLogic
         /// <summary>
         /// The state to transition into if the NPC reaches the destination.
         /// </summary>
-        protected abstract State GetNextStateIfDestinationReached();
+        protected abstract State NextStateIfDestinationReached { get; }
 
         /// <summary>
         /// The state to transition into if the path is interrupted.
         /// </summary>
-        protected abstract State GetNextStateIfPathInterrupted(WorldModel world);
+        protected abstract State NextStateIfPathInterrupted { get; }
 
         /// <summary>
         /// The set of potential destinations. The shortest path to any destination in the list will be found.
@@ -45,7 +45,7 @@ namespace BigFroggInterviewTask.Model.StateLogic
                 if (path.StepsRemaining == 0)
                 {
                     Log.Write(Log.Flag.CollectorNpcModelTrace, $"Collector NPC reached destination [{path.Destination}]");
-                    context.State = GetNextStateIfDestinationReached();
+                    context.State = NextStateIfDestinationReached;
                 }
                 else
                 {
@@ -59,7 +59,7 @@ namespace BigFroggInterviewTask.Model.StateLogic
             {
                 // Transition immediately into new pathfinding state.
                 Log.Write(Log.Flag.CollectorNpcModelTrace, $"Collector NPC path interrupted, finding new path");
-                context.State = GetNextStateIfPathInterrupted(world);
+                context.State = NextStateIfPathInterrupted;
                 return ProcessResult.ProcessNextState;
             }
         }
