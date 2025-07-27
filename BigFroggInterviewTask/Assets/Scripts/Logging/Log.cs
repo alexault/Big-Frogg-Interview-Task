@@ -16,6 +16,7 @@ namespace BigFroggInterviewTask.Logging
             WorldModelTrace,
             RandomBoxSpawnerModelTrace,
             CollectorNpcPathFinderTrace,
+            CollectorNpcRuleHandlerTrace,
         };
 
         /// <summary>
