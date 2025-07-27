@@ -15,6 +15,7 @@ namespace BigFroggInterviewTask.Logging
         {
             WorldModelTrace,
             RandomBoxSpawnerModelTrace,
+            CollectorNpcPathFinderTrace,
         };
 
         /// <summary>
@@ -32,7 +33,7 @@ namespace BigFroggInterviewTask.Logging
                 // Currently this writes messages to the Unity debug log. It could potentially be extended to
                 // route the messages to other locations if desired (log file, print to screen, etc).
                 // Preprocessor directives could also be used to set the type of logging based on the platorm.
-                Debug.Log(message);
+                Debug.Log($"{flag}: {message}");
             }
         }
 

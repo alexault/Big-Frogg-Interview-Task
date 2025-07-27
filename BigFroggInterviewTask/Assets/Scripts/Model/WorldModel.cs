@@ -228,7 +228,7 @@ namespace BigFroggInterviewTask.Model
         /// <summary>
         /// Checks whether the given size is within the size of the world.
         /// </summary>
-        private bool IsLocationInRange(Vector2Int location)
+        public bool IsLocationInRange(Vector2Int location)
         {
             return
                 location.x >= 0 &&
