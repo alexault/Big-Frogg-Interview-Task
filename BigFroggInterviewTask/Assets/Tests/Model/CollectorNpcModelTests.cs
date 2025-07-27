@@ -180,10 +180,13 @@ namespace BigFroggInterviewTask.Tests.Model
             // Add a single box to the world
             SpawnBox(startLocation + (Vector2Int.right * 5), BoxModel.BoxColor.Red);
 
-            // TODO: Implement FindPathToBox and MoveToBox states.
+            // Collector should move toward the box after entering the MoveToBox state
             List<CollectorNpcState> expectedStates = new List<CollectorNpcState>
             {
-                new CollectorNpcState { Location = startLocation, IsStuck = true }, // Idle -> FindPathToBox -> MoveToBox transition not yet implemented
+                new CollectorNpcState { Location = startLocation + (Vector2Int.right * 1) },    // Idle -> MoveToBox
+                new CollectorNpcState { Location = startLocation + (Vector2Int.right * 2) },    // MoveToBox
+                new CollectorNpcState { Location = startLocation + (Vector2Int.right * 3) },    // MoveToBox
+                new CollectorNpcState { Location = startLocation + (Vector2Int.right * 4) },    // MoveToBox
             };
 
             RunModelAndVerifyCollectorState(expectedStates);

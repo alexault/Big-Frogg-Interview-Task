@@ -35,12 +35,15 @@ namespace BigFroggInterviewTask.Model.StateLogic
 
             if (unsortedBoxes.Count > 0)
             {
-                // TODO: Add FindPathToBoxState
-                context.State = new StuckState(context);
+                // Transition immediately into FindPathToBoxState.
+                context.State = new FindPathToBoxState(context, unsortedBoxes);
                 return ProcessResult.ProcessNextState;
             }
-
-            return ProcessResult.ProcessComplete;
+            else
+            {
+                // Nothing more to do on this world tick.
+                return ProcessResult.ProcessComplete;
+            }
         }
     }
 }
