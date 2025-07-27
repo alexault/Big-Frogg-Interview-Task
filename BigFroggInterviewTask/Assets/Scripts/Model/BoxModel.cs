@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace BigFroggInterviewTask.Model
@@ -12,6 +13,7 @@ namespace BigFroggInterviewTask.Model
         /// </summary>
         public enum BoxColor
         {
+            None,
             Blue,
             Red,
         };
@@ -40,6 +42,11 @@ namespace BigFroggInterviewTask.Model
         /// <param name="config">The configuration data used to create the box.</param>
         public BoxModel(Configuration config)
         {
+            if (config.Color == BoxColor.None)
+            {
+                throw new ArgumentException("BoxModel: Box not assigned a color", "config.Color");
+            }
+
             Color = config.Color;
         }
 

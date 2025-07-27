@@ -60,6 +60,14 @@ namespace BigFroggInterviewTask.Model
             {
                 spawner.Update(this);
             }
+
+            foreach (KeyValuePair<Vector2Int, EntityModel> entityLocationPair in GetAllEntities<EntityModel>())
+            {
+                EntityModel entity = entityLocationPair.Value;
+                Vector2Int location = entityLocationPair.Key;
+
+                entity.Update(this, location);
+            }
         }
 
         /// <summary>
