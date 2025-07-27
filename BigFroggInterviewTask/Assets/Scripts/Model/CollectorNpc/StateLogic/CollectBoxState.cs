@@ -48,8 +48,7 @@ namespace BigFroggInterviewTask.Model.StateLogic
                 context.Box = box;
                 world.RemoveEntity(box, BoxLocation);
 
-                // TODO: Implement FindPathToDropoffState
-                context.State = new StuckState(context);
+                context.State = new FindPathToDropoffState(context);
                 return ProcessResult.ProcessComplete;
             }
             else

@@ -245,6 +245,33 @@ namespace BigFroggInterviewTask.Tests.Model
         }
 
         /// <summary>
+        /// Verify that the collector NPC collects an unsorted box and moves to a potential dropoff location.
+        /// </summary>
+        [Test]
+        public void VerifyCollectBoxAndMoveToDropoff()
+        {
+            LoadCollectorNpcFromConfig(DefaultCollectorNpcConfiguration);
+
+            // Add a collector to the world
+            Vector2Int startLocation = new Vector2Int(4, 0);
+            SpawnCollector(startLocation);
+
+            // Add a single box to the world
+            SpawnBox(startLocation + (Vector2Int.right * 1), BoxModel.BoxColor.Red);
+
+            // Collector collect the box after entering the CollectBox state, then move to the left after entering the MoveToDropoff state
+            List<CollectorNpcState> expectedStates = new List<CollectorNpcState>
+            {
+                new CollectorNpcState { Location = startLocation, HasCollectedBox = true, BoxColor = BoxModel.BoxColor.Red },                           // Idle -> CollectBox
+                new CollectorNpcState { Location = startLocation + (Vector2Int.left * 1), HasCollectedBox = true, BoxColor = BoxModel.BoxColor.Red },   // CollectBox -> MoveToDropoff
+                new CollectorNpcState { Location = startLocation + (Vector2Int.left * 2), HasCollectedBox = true, BoxColor = BoxModel.BoxColor.Red },   // MoveToDropoff
+                new CollectorNpcState { Location = startLocation + (Vector2Int.left * 3), HasCollectedBox = true, BoxColor = BoxModel.BoxColor.Red },   // MoveToDropoff
+            };
+
+            RunModelAndVerifyCollectorState(expectedStates);
+        }
+
+        /// <summary>
         /// Add the collector NPC entity to the world at the given location.
         /// </summary>
         private void SpawnCollector(Vector2Int location)
