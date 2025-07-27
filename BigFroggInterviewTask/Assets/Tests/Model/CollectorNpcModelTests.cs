@@ -76,6 +76,9 @@ namespace BigFroggInterviewTask.Tests.Model
             collectorNpc = new CollectorNpcModel(collectorNpcConfig);
         }
 
+        /// <summary>
+        /// Verify that a collector NPC entity can be added to the world.
+        /// </summary>
         [Test]
         public void VerifyCollectorNpcCreation()
         {
@@ -93,11 +96,118 @@ namespace BigFroggInterviewTask.Tests.Model
             RunModelAndVerifyCollectorState(expectedStates);
         }
 
+        /// <summary>
+        /// Verify that the collector NPC does not move while there are no boxes in the world.
+        /// </summary>
+        [Test]
+        public void VerifyIdleWhenWorldEmpty()
+        {
+            LoadCollectorNpcFromConfig(DefaultCollectorNpcConfiguration);
+
+            // Add a collector to the world.
+            Vector2Int startLocation = new Vector2Int(5, 5);
+            SpawnCollector(startLocation);
+
+            // Collector should remain in the same position while there are no boxes to collect.
+            List<CollectorNpcState> expectedStates = new List<CollectorNpcState>
+            {
+                new CollectorNpcState { Location = startLocation, HasCollectedBox = false, IsStuck = false },    // Idle
+                new CollectorNpcState { Location = startLocation, HasCollectedBox = false, IsStuck = false },    // Idle
+                new CollectorNpcState { Location = startLocation, HasCollectedBox = false, IsStuck = false },    // Idle
+                new CollectorNpcState { Location = startLocation, HasCollectedBox = false, IsStuck = false },    // Idle
+                new CollectorNpcState { Location = startLocation, HasCollectedBox = false, IsStuck = false },    // Idle
+            };
+
+            RunModelAndVerifyCollectorState(expectedStates);
+        }
+
+        /// <summary>
+        /// Verify that the collector NPC does not move while all the boxes in the world are already sorted to the correct side.
+        /// </summary>
+        [Test]
+        public void VerifyIdleWhenBoxesSorted()
+        {
+            LoadCollectorNpcFromConfig(DefaultCollectorNpcConfiguration);
+
+            // Add a collector to the world.
+            Vector2Int startLocation = new Vector2Int(5, 5);
+            SpawnCollector(startLocation);
+
+            // Collector should remain in the same position while all boxes are sorted.
+            List<CollectorNpcState> expectedStates = new List<CollectorNpcState>
+            {
+                new CollectorNpcState { Location = startLocation, HasCollectedBox = false, IsStuck = false },    // Idle
+                new CollectorNpcState { Location = startLocation, HasCollectedBox = false, IsStuck = false },    // Idle
+                new CollectorNpcState { Location = startLocation, HasCollectedBox = false, IsStuck = false },    // Idle
+                new CollectorNpcState { Location = startLocation, HasCollectedBox = false, IsStuck = false },    // Idle
+                new CollectorNpcState { Location = startLocation, HasCollectedBox = false, IsStuck = false },    // Idle
+            };
+
+            // Add a red box to the left column and a blue box to the right column. Verify no collector movement.
+            SpawnBox(new Vector2Int(0, 0), BoxModel.BoxColor.Red);
+            SpawnBox(new Vector2Int(world.Size.x - 1, 0), BoxModel.BoxColor.Blue);
+            RunModelAndVerifyCollectorState(expectedStates);
+
+            // Fill the left column with red boxes and add a box to the second column. Verify no collector movement.
+            for (int y = 1; y < world.Size.y; y++)
+            {
+                SpawnBox(new Vector2Int(0, y), BoxModel.BoxColor.Red);
+            }
+            SpawnBox(new Vector2Int(1, 5), BoxModel.BoxColor.Red);
+            RunModelAndVerifyCollectorState(expectedStates);
+
+            // Fill the right column with blue boxes and add a box to the secound column. Verify no collector movement.
+            for (int y = 1; y < world.Size.y; y++)
+            {
+                SpawnBox(new Vector2Int(world.Size.x - 1, y), BoxModel.BoxColor.Blue);
+            }
+            SpawnBox(new Vector2Int(world.Size.x - 2, world.Size.y - 1), BoxModel.BoxColor.Blue);
+            RunModelAndVerifyCollectorState(expectedStates);
+        }
+
+        /// <summary>
+        /// Verify that the collector NPC detects an unsorted box and moves to the nearest space adjacent to it.
+        /// </summary>
+        [Test]
+        public void VerifySimpleMoveToBox()
+        {
+            LoadCollectorNpcFromConfig(DefaultCollectorNpcConfiguration);
+
+            // Add a collector to the world
+            Vector2Int startLocation = new Vector2Int(0, 0);
+            SpawnCollector(startLocation);
+
+            // Add a single box to the world
+            SpawnBox(startLocation + (Vector2Int.right * 5), BoxModel.BoxColor.Red);
+
+            // TODO: Implement FindPathToBox and MoveToBox states.
+            List<CollectorNpcState> expectedStates = new List<CollectorNpcState>
+            {
+                new CollectorNpcState { Location = startLocation, IsStuck = true }, // Idle -> FindPathToBox -> MoveToBox transition not yet implemented
+            };
+
+            RunModelAndVerifyCollectorState(expectedStates);
+        }
+
+        /// <summary>
+        /// Add the collector NPC entity to the world at the given location.
+        /// </summary>
         private void SpawnCollector(Vector2Int location)
         {
             world.AddEntity(collectorNpc, location);
         }
 
+        /// <summary>
+        /// Add a box to the world at the given location.
+        /// </summary>
+        private void SpawnBox(Vector2Int location, BoxModel.BoxColor color)
+        {
+            world.AddEntity(new BoxModel(new BoxModel.Configuration { Color = color }), location);
+        }
+
+        /// <summary>
+        /// Verify that the collector NPC is in the expected state after each tick of the world model.
+        /// </summary>
         private void RunModelAndVerifyCollectorState(List<CollectorNpcState> expectedStates)
         {
             foreach (CollectorNpcState expectedState in expectedStates)

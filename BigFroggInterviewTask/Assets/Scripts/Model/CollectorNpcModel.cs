@@ -58,9 +58,7 @@ namespace BigFroggInterviewTask.Model
             Log.Write(Log.Flag.CollectorNpcModelTrace, $"Creating collector NPC model");
 
             stateContext = new StateContext(config);
-
-            // TODO: Add an Idle state to the state machine
-            stateContext.State = new StuckState(stateContext);
+            stateContext.State = new IdleState(stateContext);
         }
 
         /// <summary>
