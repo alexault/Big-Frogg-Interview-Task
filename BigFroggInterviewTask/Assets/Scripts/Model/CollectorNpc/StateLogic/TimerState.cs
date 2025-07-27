@@ -36,19 +36,17 @@ namespace BigFroggInterviewTask.Model.StateLogic
             {
                 Log.Write(Log.Flag.CollectorNpcModelTrace, $"Collector NPC timer expired, processing state");
 
-                // Process the action that occurs when the timer expires.
-                TimerExpired(context, world, npcLocation);
-
                 // If we remain in the same state, the timer restarts.
                 timerTicksRemaining = TimerSetpoint;
+
+                // Process the action that occurs when the timer expires.
+                return TimerExpired(context, world, npcLocation);
             }
             else
             {
                 Log.Write(Log.Flag.CollectorNpcModelTrace, $"Collector NPC waiting on timed state, {timerTicksRemaining} ticks remaining");
+                return ProcessResult.ProcessComplete;
             }
-
-            // Waiting on a timer will always require one tick to execute.
-            return ProcessResult.ProcessComplete;
         }
 
         /// <summary>
