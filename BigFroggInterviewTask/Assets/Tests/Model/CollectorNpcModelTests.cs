@@ -29,7 +29,7 @@ namespace BigFroggInterviewTask.Tests.Model
 
         private struct CollectorNpcState
         {
-            public Vector2Int Location;
+            public Vector2Int? Location;
             public bool? HasCollectedBox;
             public BoxModel.BoxColor? BoxColor;
             public bool? IsStuck;
@@ -349,6 +349,202 @@ namespace BigFroggInterviewTask.Tests.Model
         }
 
         /// <summary>
+        /// Verify that the collector NPC moves to and collects an unsorted box, then moves to and drops it into a sorted location.
+        /// </summary>
+        [Test]
+        public void VerifyFullCollectorBehavior()
+        {
+            LoadCollectorNpcFromConfig(DefaultCollectorNpcConfiguration);
+
+            // Add a collector to the world
+            Vector2Int startLocation = new Vector2Int(0, 0);
+            SpawnCollector(startLocation);
+
+            // Add a single box to the world
+            Vector2Int boxStartLocation = startLocation + (Vector2Int.right * 5);
+            SpawnBox(boxStartLocation, BoxModel.BoxColor.Red);
+
+            // Collector moves to and collects the box, then moves to and drops it in a sorted location
+            List<CollectorNpcState> expectedStates = new List<CollectorNpcState>
+            {
+                new CollectorNpcState { Location = startLocation + (Vector2Int.right * 1), HasCollectedBox = false },                                   // Idle -> MoveToBox
+                new CollectorNpcState { Location = startLocation + (Vector2Int.right * 2), HasCollectedBox = false },                                   // MoveToBox
+                new CollectorNpcState { Location = startLocation + (Vector2Int.right * 3), HasCollectedBox = false },                                   // MoveToBox
+                new CollectorNpcState { Location = startLocation + (Vector2Int.right * 4), HasCollectedBox = false },                                   // MoveToBox
+                new CollectorNpcState { Location = startLocation + (Vector2Int.right * 4), HasCollectedBox = true, BoxColor = BoxModel.BoxColor.Red },  // MoveToBox -> CollectBox
+                new CollectorNpcState { Location = startLocation + (Vector2Int.right * 3), HasCollectedBox = true, BoxColor = BoxModel.BoxColor.Red },   // CollectBox -> MoveToDropoff
+                new CollectorNpcState { Location = startLocation + (Vector2Int.right * 2), HasCollectedBox = true, BoxColor = BoxModel.BoxColor.Red },   // MoveToDropoff
+                new CollectorNpcState { Location = startLocation + (Vector2Int.right * 1), HasCollectedBox = true, BoxColor = BoxModel.BoxColor.Red },   // MoveToDropoff
+                new CollectorNpcState { Location = startLocation + (Vector2Int.right * 1), HasCollectedBox = false},                                     // MoveToDropoff -> DropOffBox
+            };
+            Vector2Int expectedBoxDropLocation = startLocation;
+
+            RunModelAndVerifyCollectorState(expectedStates);
+
+            // Verify box was removed from original location and placed in new location
+            Assert.That(world.GetEntityAt(boxStartLocation), Is.Null);
+            Assert.That(world.GetEntityAt(expectedBoxDropLocation), Is.TypeOf<BoxModel>());
+        }
+
+        /// <summary>
+        /// Verify that the collector NPC collects and sorts all boxes.
+        /// </summary>
+        [Test]
+        public void VerifyFullCollectorBehaviorMultipleBoxes()
+        {
+            LoadCollectorNpcFromConfig(DefaultCollectorNpcConfiguration);
+
+            // Add a collector to the world
+            Vector2Int startLocation = new Vector2Int(0, 0);
+            SpawnCollector(startLocation);
+
+            // Add one box of each color to the collector
+            Vector2Int redBoxStartLocation = new Vector2Int(4, 0);
+            Vector2Int blueBoxStartLocation = new Vector2Int(5, 0);
+            SpawnBox(redBoxStartLocation, BoxModel.BoxColor.Red);
+            SpawnBox(blueBoxStartLocation, BoxModel.BoxColor.Blue);
+
+            // Collector collects and sorts the red box to the left, then the blue box to the right
+            List<CollectorNpcState> expectedStates = new List<CollectorNpcState>
+            {
+                new CollectorNpcState { Location = new Vector2Int(1, 0), HasCollectedBox = false },                                     // Idle -> MoveToBox
+                new CollectorNpcState { Location = new Vector2Int(2, 0), HasCollectedBox = false },                                     // MoveToBox
+                new CollectorNpcState { Location = new Vector2Int(3, 0), HasCollectedBox = false },                                     // MoveToBox
+                new CollectorNpcState { Location = new Vector2Int(3, 0), HasCollectedBox = true, BoxColor = BoxModel.BoxColor.Red },    // MoveToBox -> CollectBox
+                new CollectorNpcState { Location = new Vector2Int(2, 0), HasCollectedBox = true, BoxColor = BoxModel.BoxColor.Red },    // CollectBox -> MoveToDropoff
+                new CollectorNpcState { Location = new Vector2Int(1, 0), HasCollectedBox = true, BoxColor = BoxModel.BoxColor.Red },    // MoveToDropoff
+                new CollectorNpcState { Location = new Vector2Int(1, 0), HasCollectedBox = false },                                     // MoveToDropoff -> DropOffBox
+                new CollectorNpcState { Location = new Vector2Int(2, 0), HasCollectedBox = false },                                     // DropOffBox -> MoveToBox
+                new CollectorNpcState { Location = new Vector2Int(3, 0), HasCollectedBox = false },                                     // MoveToBox
+                new CollectorNpcState { Location = new Vector2Int(4, 0), HasCollectedBox = false },                                     // MoveToBox
+                new CollectorNpcState { Location = new Vector2Int(4, 0), HasCollectedBox = true, BoxColor = BoxModel.BoxColor.Blue },   // MoveToBox -> CollectBox
+                new CollectorNpcState { Location = new Vector2Int(5, 0), HasCollectedBox = true, BoxColor = BoxModel.BoxColor.Blue },   // CollectBox -> MoveToDropoff
+                new CollectorNpcState { Location = new Vector2Int(6, 0), HasCollectedBox = true, BoxColor = BoxModel.BoxColor.Blue },   // MoveToDropoff
+                new CollectorNpcState { Location = new Vector2Int(7, 0), HasCollectedBox = true, BoxColor = BoxModel.BoxColor.Blue },   // MoveToDropoff
+                new CollectorNpcState { Location = new Vector2Int(8, 0), HasCollectedBox = true, BoxColor = BoxModel.BoxColor.Blue },   // MoveToDropoff
+                new CollectorNpcState { Location = new Vector2Int(8, 0), HasCollectedBox = false },                                     // MoveToDropoff -> DropOffBox
+            };
+            Vector2Int expectedRedBoxDropLocation = new Vector2Int(0, 0);
+            Vector2Int expectedBlueBoxDropLocation = new Vector2Int(9, 0);
+
+            RunModelAndVerifyCollectorState(expectedStates);
+
+            // Verify boxes were removed from original location and placed in new location
+            Assert.That(world.GetEntityAt(redBoxStartLocation), Is.Null);
+            Assert.That(world.GetEntityAt(blueBoxStartLocation), Is.Null);
+            Assert.That(world.GetEntityAt(expectedRedBoxDropLocation), Is.TypeOf<BoxModel>());
+            Assert.That((world.GetEntityAt(expectedRedBoxDropLocation) as BoxModel).Color, Is.EqualTo(BoxModel.BoxColor.Red));
+            Assert.That(world.GetEntityAt(expectedBlueBoxDropLocation), Is.TypeOf<BoxModel>());
+            Assert.That((world.GetEntityAt(expectedBlueBoxDropLocation) as BoxModel).Color, Is.EqualTo(BoxModel.BoxColor.Blue));
+        }
+
+        /// <summary>
+        /// Verify that the collector NPC re-routes to the nearest unsorted box when its original path is interrupted
+        /// </summary>
+        [Test]
+        public void VerifyMoveToBoxPathInterrupted()
+        {
+            LoadCollectorNpcFromConfig(DefaultCollectorNpcConfiguration);
+
+            // Add a collector to the world
+            Vector2Int startLocation = new Vector2Int(0, 0);
+            SpawnCollector(startLocation);
+
+            // Add a single box to the world
+            Vector2Int redBoxStartLocation = startLocation + (Vector2Int.right * 5);
+            SpawnBox(redBoxStartLocation, BoxModel.BoxColor.Red);
+
+            // Collector begins moving toward the box
+            List<CollectorNpcState> expectedStatesBeforeBoxSpawn = new List<CollectorNpcState>
+            {
+                new CollectorNpcState { Location = startLocation + (Vector2Int.right * 1), HasCollectedBox = false },   // Idle -> MoveToBox
+            };
+            RunModelAndVerifyCollectorState(expectedStatesBeforeBoxSpawn);
+
+            // Add a new box in the path of the collector
+            Vector2Int blueBoxStartLocation = startLocation + (Vector2Int.right * 4);
+            SpawnBox(blueBoxStartLocation, BoxModel.BoxColor.Blue);
+
+            // Collector collects and sorts the new box instead
+            List<CollectorNpcState> expectedStatesAfterBoxSpawn = new List<CollectorNpcState>
+            {
+                new CollectorNpcState { Location = startLocation + (Vector2Int.right * 2), HasCollectedBox = false },                                                   // MoveToBox
+                new CollectorNpcState { Location = startLocation + (Vector2Int.right * 3), HasCollectedBox = false },                                                   // MoveToBox
+                new CollectorNpcState { Location = startLocation + (Vector2Int.right * 3), HasCollectedBox = true, BoxColor = BoxModel.BoxColor.Blue },                 // MoveToBox -> CollectBox
+                new CollectorNpcState { HasCollectedBox = true, BoxColor = BoxModel.BoxColor.Blue },                                                                    // CollectBox -> MoveToDropoff (can either move right or up)
+                new CollectorNpcState { Location = startLocation + (Vector2Int.right * 4) + Vector2Int.up, HasCollectedBox = true, BoxColor = BoxModel.BoxColor.Blue }, // MoveToDropoff
+                new CollectorNpcState { Location = startLocation + (Vector2Int.right * 5) + Vector2Int.up, HasCollectedBox = true, BoxColor = BoxModel.BoxColor.Blue }, // MoveToDropoff
+                new CollectorNpcState { Location = startLocation + (Vector2Int.right * 6) + Vector2Int.up, HasCollectedBox = true, BoxColor = BoxModel.BoxColor.Blue }, // MoveToDropoff
+                new CollectorNpcState { Location = startLocation + (Vector2Int.right * 7) + Vector2Int.up, HasCollectedBox = true, BoxColor = BoxModel.BoxColor.Blue }, // MoveToDropoff
+                new CollectorNpcState { Location = startLocation + (Vector2Int.right * 8) + Vector2Int.up, HasCollectedBox = true, BoxColor = BoxModel.BoxColor.Blue }, // MoveToDropoff
+                new CollectorNpcState { Location = startLocation + (Vector2Int.right * 8) + Vector2Int.up, HasCollectedBox = false},                                    // MoveToDropoff -> DropOffBox
+            };
+            Vector2Int expectedBlueBoxDropLocation = startLocation + (Vector2Int.right * 9) + Vector2Int.up;
+
+            RunModelAndVerifyCollectorState(expectedStatesAfterBoxSpawn);
+
+            // Verify blue box was removed from original location and placed in new location
+            Assert.That(world.GetEntityAt(blueBoxStartLocation), Is.Null);
+            Assert.That(world.GetEntityAt(expectedBlueBoxDropLocation), Is.TypeOf<BoxModel>());
+            Assert.That((world.GetEntityAt(expectedBlueBoxDropLocation) as BoxModel).Color, Is.EqualTo(BoxModel.BoxColor.Blue));
+
+            // Verify red box remains in original location
+            Assert.That(world.GetEntityAt(redBoxStartLocation), Is.TypeOf<BoxModel>());
+            Assert.That((world.GetEntityAt(redBoxStartLocation) as BoxModel).Color, Is.EqualTo(BoxModel.BoxColor.Red));
+        }
+
+        /// <summary>
+        /// Verify that the collector NPC re-routes to the nearest dropoff location when its original path is interrupted
+        /// </summary>
+        [Test]
+        public void VerifyMoveToDropoffPathInterrupted()
+        {
+            LoadCollectorNpcFromConfig(DefaultCollectorNpcConfiguration);
+
+            // Add a collector to the world
+            Vector2Int startLocation = new Vector2Int(4, 0);
+            SpawnCollector(startLocation);
+
+            // Add a single box to the world adjacent to the collector
+            Vector2Int redBoxStartLocation = startLocation + (Vector2Int.right * 1);
+            SpawnBox(redBoxStartLocation, BoxModel.BoxColor.Red);
+
+            // Collector moves to and collects the box, then moves to and drops it in a sorted location
+            List<CollectorNpcState> expectedStatesBeforeBoxSpawn = new List<CollectorNpcState>
+            {
+                new CollectorNpcState { Location = startLocation, HasCollectedBox = true, BoxColor = BoxModel.BoxColor.Red },                           // Idle -> CollectBox
+                new CollectorNpcState { Location = startLocation + (Vector2Int.left * 1), HasCollectedBox = true, BoxColor = BoxModel.BoxColor.Red },   // CollectBox -> MoveToDropoff
+
+            };
+            RunModelAndVerifyCollectorState(expectedStatesBeforeBoxSpawn);
+
+            // Add a new box in the path of the collector
+            Vector2Int blueBoxStartLocation = startLocation + (Vector2Int.left * 2);
+            SpawnBox(blueBoxStartLocation, BoxModel.BoxColor.Blue);
+
+            // Collector routes around the new box
+            List<CollectorNpcState> expectedStatesAfterBoxSpawn = new List<CollectorNpcState>
+            {
+                new CollectorNpcState { Location = startLocation + (Vector2Int.left * 1) + Vector2Int.up, HasCollectedBox = true, BoxColor = BoxModel.BoxColor.Red },   // MoveToDropoff
+                new CollectorNpcState { Location = startLocation + (Vector2Int.left * 2) + Vector2Int.up, HasCollectedBox = true, BoxColor = BoxModel.BoxColor.Red },   // MoveToDropoff
+                new CollectorNpcState { Location = startLocation + (Vector2Int.left * 3) + Vector2Int.up, HasCollectedBox = true, BoxColor = BoxModel.BoxColor.Red },   // MoveToDropoff
+                new CollectorNpcState { Location = startLocation + (Vector2Int.left * 3) + Vector2Int.up, HasCollectedBox = false},                                     // MoveToDropoff -> DropOffBox
+            };
+            Vector2Int expectedRedBoxDropLocation = startLocation + (Vector2Int.left * 4) + Vector2Int.up;
+
+            RunModelAndVerifyCollectorState(expectedStatesAfterBoxSpawn);
+
+            // Verify red box was removed from original location and placed in new location
+            Assert.That(world.GetEntityAt(redBoxStartLocation), Is.Null);
+            Assert.That(world.GetEntityAt(expectedRedBoxDropLocation), Is.TypeOf<BoxModel>());
+            Assert.That((world.GetEntityAt(expectedRedBoxDropLocation) as BoxModel).Color, Is.EqualTo(BoxModel.BoxColor.Red));
+
+            // Verify blue box remains in original location
+            Assert.That(world.GetEntityAt(blueBoxStartLocation), Is.TypeOf<BoxModel>());
+            Assert.That((world.GetEntityAt(blueBoxStartLocation) as BoxModel).Color, Is.EqualTo(BoxModel.BoxColor.Blue));
+        }
+
+        /// <summary>
         /// Add the collector NPC entity to the world at the given location.
         /// </summary>
         private void SpawnCollector(Vector2Int location)
@@ -376,11 +572,11 @@ namespace BigFroggInterviewTask.Tests.Model
                 Dictionary<Vector2Int, CollectorNpcModel> collectors = world.GetAllEntities<CollectorNpcModel>();
                 Assert.That(collectors.Count, Is.EqualTo(1));
 
-                if (expectedState.Location != null)
+                if (expectedState.Location.HasValue)
                 {
-                    Assert.That(collectors.ContainsKey(expectedState.Location), Is.True);
-                    Assert.That(collectors[expectedState.Location], Is.EqualTo(collectorNpc));
-                    Assert.That(world.GetEntityAt(expectedState.Location), Is.EqualTo(collectorNpc));
+                    Assert.That(collectors.ContainsKey(expectedState.Location.Value), Is.True);
+                    Assert.That(collectors[expectedState.Location.Value], Is.EqualTo(collectorNpc));
+                    Assert.That(world.GetEntityAt(expectedState.Location.Value), Is.EqualTo(collectorNpc));
                 }
 
                 if (expectedState.HasCollectedBox.HasValue)
