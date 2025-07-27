@@ -175,18 +175,50 @@ namespace BigFroggInterviewTask.Tests.Model
             // Add some boxes already occupying the right column
             Dictionary<Vector2Int, BoxModel.BoxColor> sortedBoxes = new Dictionary<Vector2Int, BoxModel.BoxColor>
             {
+                { new Vector2Int(0, 0), BoxModel.BoxColor.Red },
+                { new Vector2Int(0, 2), BoxModel.BoxColor.Red },
+                { new Vector2Int(0, world.Size.y - 1), BoxModel.BoxColor.Red },
+
                 { new Vector2Int(world.Size.x - 1, 0), BoxModel.BoxColor.Blue },
-                { new Vector2Int(world.Size.x - 1, 2), BoxModel.BoxColor.Blue },
+                { new Vector2Int(world.Size.x - 1, world.Size.y - 3), BoxModel.BoxColor.Blue },
                 { new Vector2Int(world.Size.x - 1, world.Size.y - 1), BoxModel.BoxColor.Blue },
             };
             SpawnBoxes(sortedBoxes);
 
-            // Generate the list of dropoff locations
-            List<Vector2Int> dropoffLocations = RuleHandler.GetDropoffLocationsForBox(DefaultRules, world, BoxModel.BoxColor.Blue);
 
-            foreach (Vector2Int dropoffLocation in dropoffLocations)
+            // Generate the list of dropoff locations for red boxes
+            List<Vector2Int> redDropoffLocations = RuleHandler.GetDropoffLocationsForBox(DefaultRules, world, BoxModel.BoxColor.Red);
+
+            foreach (Vector2Int dropoffLocation in redDropoffLocations)
             {
                 // Verify that all dropoff locations are in the leftmost column
+                Assert.That(dropoffLocation.x, Is.EqualTo(0));
+
+                // Verify that all dropoff locations are empty
+                Assert.That(world.GetEntityAt(dropoffLocation), Is.Null);
+            }
+
+            // Verify that all valid dropoff locations are in the list
+            for (int y = 0; y < world.Size.y; y++)
+            {
+                Vector2Int location = new Vector2Int(0, y);
+                if (world.GetEntityAt(location) == null)
+                {
+                    Assert.That(redDropoffLocations.Contains(location), Is.True);
+                }
+                else
+                {
+                    Assert.That(redDropoffLocations.Contains(location), Is.False);
+                }
+            }
+
+
+            // Generate the list of dropoff locations for blue boxes
+            List<Vector2Int> blueDropoffLocations = RuleHandler.GetDropoffLocationsForBox(DefaultRules, world, BoxModel.BoxColor.Blue);
+
+            foreach (Vector2Int dropoffLocation in blueDropoffLocations)
+            {
+                // Verify that all dropoff locations are in the rightmost column
                 Assert.That(dropoffLocation.x, Is.EqualTo(world.Size.x - 1));
 
                 // Verify that all dropoff locations are empty
@@ -199,11 +231,11 @@ namespace BigFroggInterviewTask.Tests.Model
                 Vector2Int location = new Vector2Int(world.Size.x - 1, y);
                 if (world.GetEntityAt(location) == null)
                 {
-                    Assert.That(dropoffLocations.Contains(location), Is.True);
+                    Assert.That(blueDropoffLocations.Contains(location), Is.True);
                 }
                 else
                 {
-                    Assert.That(dropoffLocations.Contains(location), Is.False);
+                    Assert.That(blueDropoffLocations.Contains(location), Is.False);
                 }
             }
         }

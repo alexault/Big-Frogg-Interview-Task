@@ -104,7 +104,7 @@ namespace BigFroggInterviewTask.Model.CollectorNpc
             List<Vector2Int> emptyTilesInDropoffColumn = new List<Vector2Int>();
 
             // All tiles in the dropoff column not already occupied by a box are valid locations to sort a box into
-            if (firstPartiallyEmptyColumn > 0 && firstPartiallyEmptyColumn < world.Size.x)
+            if (firstPartiallyEmptyColumn >= 0 && firstPartiallyEmptyColumn < world.Size.x)
             {
                 for (int y = 0; y < world.Size.y; y++)
                 {
