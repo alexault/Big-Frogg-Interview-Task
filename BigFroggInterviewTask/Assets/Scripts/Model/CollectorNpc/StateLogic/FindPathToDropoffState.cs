@@ -27,7 +27,7 @@ namespace BigFroggInterviewTask.Model.StateLogic
         /// <summary>
         /// The state to transition into if the NPC is already adjacent to a dropoff location.
         /// </summary>
-        protected override State NextStateIfZeroLengthPathFound { get { return new StuckState(context); }    // TODO: Implement DropoffBox state
+        protected override State NextStateIfZeroLengthPathFound { get { return new DropOffBoxState(context, path.Destination); }
  }
         /// <summary>
         /// The state to transition into if a path to a dropoff location is found.

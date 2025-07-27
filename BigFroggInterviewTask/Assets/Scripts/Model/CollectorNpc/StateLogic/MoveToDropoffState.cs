@@ -22,8 +22,8 @@ namespace BigFroggInterviewTask.Model.StateLogic
         /// <summary>
         /// The state to transition into if the NPC reaches the destination.
         /// </summary>
-        protected override State NextStateIfDestinationReached { get { return new StuckState(context); }    // TODO: Implement DropoffBox state
- }
+        protected override State NextStateIfDestinationReached { get { return new DropOffBoxState(context, path.Destination); } }
+
         /// <summary>
         /// The state to transition into if the path is interrupted.
         /// </summary>
