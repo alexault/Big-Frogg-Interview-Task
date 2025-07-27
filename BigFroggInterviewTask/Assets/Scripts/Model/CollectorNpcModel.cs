@@ -32,12 +32,12 @@ namespace BigFroggInterviewTask.Model
         /// <summary>
         /// Indicates whether the NPC has collected a box.
         /// </summary>
-        public bool HasCollectedBox { get { return false; } } // TODO: Implement this property
+        public bool HasCollectedBox { get { return stateContext.Box != null; } }
 
         /// <summary>
         /// Indicates the color of the box the NPC has collected, or None if the NPC has not collected a box.
         /// </summary>
-        public BoxModel.BoxColor CollectedBoxColor { get { return BoxModel.BoxColor.None; } } // TODO: Implement this property
+        public BoxModel.BoxColor CollectedBoxColor { get { return stateContext.Box == null ? BoxModel.BoxColor.None : stateContext.Box.Color; } }
 
         /// <summary>
         /// Indicates whether the NPC has reached a point where it is unable to determine what action to take next.

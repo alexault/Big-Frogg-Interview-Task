@@ -16,7 +16,7 @@ namespace BigFroggInterviewTask.Model.StateLogic
         /// <summary>
         /// The state to transition into if the NPC is already adjacent to an unsorted box.
         /// </summary>
-        protected override State GetNextStateIfZeroLengthPathFound() { return new StuckState(context); }
+        protected override State GetNextStateIfZeroLengthPathFound() { return new CollectBoxState(context, path.Destination); }
 
         /// <summary>
         /// The state to transition into if a path to an unsorted box is found.

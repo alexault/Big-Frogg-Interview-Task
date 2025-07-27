@@ -1,4 +1,3 @@
-using BigFroggInterviewTask.Logging;
 using BigFroggInterviewTask.Model.CollectorNpc;
 using System.Collections.Generic;
 using UnityEngine;
@@ -23,7 +22,7 @@ namespace BigFroggInterviewTask.Model.StateLogic
         /// <summary>
         /// The state to transition into if the NPC reaches the destination.
         /// </summary>
-        protected override State GetNextStateIfDestinationReached() { return new StuckState(context); }  // TODO: Implement CollectBoxState
+        protected override State GetNextStateIfDestinationReached() { return new CollectBoxState(context, path.Destination); }
 
         /// <summary>
         /// The state to transition into if the path is interrupted.

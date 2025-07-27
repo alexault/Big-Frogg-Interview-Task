@@ -47,6 +47,11 @@ namespace BigFroggInterviewTask.Model.StateLogic
         public bool IsStuck { get { return State is StuckState; } }
 
         /// <summary>
+        /// The box carried by the NPC, if any.
+        /// </summary>
+        public BoxModel Box { get; set; }
+
+        /// <summary>
         /// Create a new state machine for the collector NPC based on the given configuration.
         /// </summary>
         public StateContext(CollectorNpcModel.Configuration config)

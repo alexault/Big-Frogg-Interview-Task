@@ -22,7 +22,7 @@ namespace BigFroggInterviewTask.Model.StateLogic
         /// <summary>
         /// The set of potential destinations. The shortest path to any destination in the list will be found.
         /// </summary>
-        private Path path;
+        protected Path path;
 
         /// <summary>
         /// Constructs a Timer state.

@@ -193,6 +193,58 @@ namespace BigFroggInterviewTask.Tests.Model
         }
 
         /// <summary>
+        /// Verify that the collector NPC collects an adjacent unsorted box.
+        /// </summary>
+        [Test]
+        public void VerifyCollectBox()
+        {
+            LoadCollectorNpcFromConfig(DefaultCollectorNpcConfiguration);
+
+            // Add a collector to the world
+            Vector2Int startLocation = new Vector2Int(0, 0);
+            SpawnCollector(startLocation);
+
+            // Add a single box to the world adjacent to the collector
+            SpawnBox(startLocation + (Vector2Int.right * 1), BoxModel.BoxColor.Red);
+
+            // Collector should collect the box
+            List<CollectorNpcState> expectedStates = new List<CollectorNpcState>
+            {
+                new CollectorNpcState { Location = startLocation, HasCollectedBox = true, BoxColor = BoxModel.BoxColor.Red },   // Idle -> CollectBox
+            };
+
+            RunModelAndVerifyCollectorState(expectedStates);
+        }
+
+        /// <summary>
+        /// Verify that the collector NPC moves to an unsorted box and collects it.
+        /// </summary>
+        [Test]
+        public void VerifyMoveToAndCollectBox()
+        {
+            LoadCollectorNpcFromConfig(DefaultCollectorNpcConfiguration);
+
+            // Add a collector to the world
+            Vector2Int startLocation = new Vector2Int(0, 0);
+            SpawnCollector(startLocation);
+
+            // Add a single box to the world
+            SpawnBox(startLocation + (Vector2Int.right * 5), BoxModel.BoxColor.Red);
+
+            // Collector should move toward the box after entering the MoveToBox state, then collect it after entering the CollectBox state
+            List<CollectorNpcState> expectedStates = new List<CollectorNpcState>
+            {
+                new CollectorNpcState { Location = startLocation + (Vector2Int.right * 1), HasCollectedBox = false },                                   // Idle -> MoveToBox
+                new CollectorNpcState { Location = startLocation + (Vector2Int.right * 2), HasCollectedBox = false },                                   // MoveToBox
+                new CollectorNpcState { Location = startLocation + (Vector2Int.right * 3), HasCollectedBox = false },                                   // MoveToBox
+                new CollectorNpcState { Location = startLocation + (Vector2Int.right * 4), HasCollectedBox = false },                                   // MoveToBox
+                new CollectorNpcState { Location = startLocation + (Vector2Int.right * 4), HasCollectedBox = true, BoxColor = BoxModel.BoxColor.Red },  // MoveToBox -> CollectBox
+            };
+
+            RunModelAndVerifyCollectorState(expectedStates);
+        }
+
+        /// <summary>
         /// Add the collector NPC entity to the world at the given location.
         /// </summary>
         private void SpawnCollector(Vector2Int location)
