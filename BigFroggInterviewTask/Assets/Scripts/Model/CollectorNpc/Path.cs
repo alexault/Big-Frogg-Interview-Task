@@ -125,7 +125,7 @@ namespace BigFroggInterviewTask.Model.CollectorNpc
 
                 // All the paths with a length equal to the iteration number were found.
                 // On the next iteration, use this list to find all paths with length one greater.
-                Log.Write(Log.Flag.CollectorNpcPathFinderTrace, $"Total paths of length {pathesFoundThisIteration[0].Count} found: {pathesFoundThisIteration.Count}");
+                Log.Write(Log.Flag.CollectorNpcPathFinderTrace, $"Total paths of length {pathsToSearch[0].Count + 1} found: {pathesFoundThisIteration.Count}");
                 pathsToSearch = pathesFoundThisIteration;
             }
 
