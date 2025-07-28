@@ -1,7 +1,7 @@
 using System.IO;
 using UnityEngine;
 
-namespace BigFroggInterviewTask.Model
+namespace BigFroggInterviewTask.Config
 {
     /// <summary>
     /// Helper class used to read a configuration file.

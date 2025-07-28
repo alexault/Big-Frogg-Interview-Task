@@ -1,3 +1,4 @@
+using BigFroggInterviewTask.Config;
 using BigFroggInterviewTask.Logging;
 using BigFroggInterviewTask.Model;
 using BigFroggInterviewTask.Model.CollectorNpc;
