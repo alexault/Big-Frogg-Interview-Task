@@ -34,7 +34,7 @@ namespace BigFroggInterviewTask.Model.StateLogic
         /// <summary>
         /// Check that the target dropoff location is empty and place the box there if so.
         /// </summary>
-        protected override ProcessResult TimerExpired(StateContext context, WorldModel world, Vector2Int npcLocation)
+        protected override ProcessResult TimerExpired(WorldModel world, Vector2Int npcLocation)
         {
             if (world.GetEntityAt(DropoffLocation) == null)
             {

@@ -20,7 +20,7 @@ namespace BigFroggInterviewTask.Model.StateLogic
         /// <summary>
         /// Process the collector NPC logic for the Stuck state.
         /// </summary>
-        public override ProcessResult ProcessTick(StateContext context, WorldModel world, Vector2Int npcLocation)
+        public override ProcessResult ProcessTick(WorldModel world, Vector2Int npcLocation)
         {
             // We are stuck, there is nothing to do and no state to advance to.
             return ProcessResult.ProcessComplete;

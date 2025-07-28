@@ -35,7 +35,7 @@ namespace BigFroggInterviewTask.Model.StateLogic
         /// <summary>
         /// Complete the action the NPC takes for this state when the timer expires.
         /// </summary>
-        protected override ProcessResult TimerExpired(StateContext context, WorldModel world, Vector2Int npcLocation)
+        protected override ProcessResult TimerExpired(WorldModel world, Vector2Int npcLocation)
         {
             if (path.IsPathPassable(world))
             {

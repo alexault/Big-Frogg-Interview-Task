@@ -114,7 +114,7 @@ namespace BigFroggInterviewTask.Model.StateLogic
             while (result == State.ProcessResult.ProcessNextState)
             {
                 Log.Write(Log.Flag.CollectorNpcModelTrace, $"Collector NPC state model in state [{State.Name}]");
-                result = State.ProcessTick(this, world, npcLocation);
+                result = State.ProcessTick(world, npcLocation);
             } 
         }
     }

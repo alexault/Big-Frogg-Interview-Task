@@ -48,7 +48,7 @@ namespace BigFroggInterviewTask.Model.StateLogic
         /// <summary>
         /// Attempt to find the shortest path to any of the set of destinations and advance to the next state based on the result.
         /// </summary>
-        public override ProcessResult ProcessTick(StateContext context, WorldModel world, Vector2Int npcLocation)
+        public override ProcessResult ProcessTick(WorldModel world, Vector2Int npcLocation)
         {
             List<Vector2Int> potentialDestinations = GetPotentialDestinations(world);
 

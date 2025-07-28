@@ -28,7 +28,7 @@ namespace BigFroggInterviewTask.Model.StateLogic
         /// <summary>
         /// Check whether an unsorted box has appeared in the world, and advance to the FindPathToBoxState state if so.
         /// </summary>
-        protected override ProcessResult TimerExpired(StateContext context, WorldModel world, Vector2Int npcLocation)
+        protected override ProcessResult TimerExpired(WorldModel world, Vector2Int npcLocation)
         {
             List<Vector2Int> unsortedBoxes = RuleHandler.FindAllUnsortedBoxes(context.Rules, world);
             Log.Write(Log.Flag.CollectorNpcModelTrace, $"Idle state found {unsortedBoxes.Count} unsorted boxes");

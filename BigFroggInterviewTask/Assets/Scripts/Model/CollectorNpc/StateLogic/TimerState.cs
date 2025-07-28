@@ -29,7 +29,7 @@ namespace BigFroggInterviewTask.Model.StateLogic
         /// <summary>
         /// Determine if the timer has expired and if so, process the action.
         /// </summary>
-        public override ProcessResult ProcessTick(StateContext context, WorldModel world, Vector2Int npcLocation)
+        public override ProcessResult ProcessTick(WorldModel world, Vector2Int npcLocation)
         {
             timerTicksRemaining--;
             if (timerTicksRemaining == 0)
@@ -40,7 +40,7 @@ namespace BigFroggInterviewTask.Model.StateLogic
                 timerTicksRemaining = TimerSetpoint;
 
                 // Process the action that occurs when the timer expires.
-                return TimerExpired(context, world, npcLocation);
+                return TimerExpired(world, npcLocation);
             }
             else
             {
@@ -52,6 +52,6 @@ namespace BigFroggInterviewTask.Model.StateLogic
         /// <summary>
         /// Complete the action the NPC takes for this state when the timer expires.
         /// </summary>
-        protected abstract ProcessResult TimerExpired(StateContext context, WorldModel world, Vector2Int npcLocation);
+        protected abstract ProcessResult TimerExpired(WorldModel world, Vector2Int npcLocation);
     }
 }

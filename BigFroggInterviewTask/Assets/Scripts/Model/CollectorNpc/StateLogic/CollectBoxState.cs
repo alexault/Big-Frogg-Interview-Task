@@ -34,7 +34,7 @@ namespace BigFroggInterviewTask.Model.StateLogic
         /// <summary>
         /// Check that a box exists at the target location and collect it if so.
         /// </summary>
-        protected override ProcessResult TimerExpired(StateContext context, WorldModel world, Vector2Int npcLocation)
+        protected override ProcessResult TimerExpired(WorldModel world, Vector2Int npcLocation)
         {
             EntityModel entityAtTarget = world.GetEntityAt(BoxLocation);
             if (entityAtTarget is BoxModel)

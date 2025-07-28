@@ -41,6 +41,6 @@ namespace BigFroggInterviewTask.Model.StateLogic
         /// ProcessNextState if the state executed in zero ticks, and that the next state should be processed within the same tick.
         /// ProcessComplete if the state took one tick to execute, and that the next state should not be processed until the next tick.
         /// </returns>
-        public abstract ProcessResult ProcessTick(StateContext context, WorldModel world, Vector2Int npcLocation);
+        public abstract ProcessResult ProcessTick(WorldModel world, Vector2Int npcLocation);
     }
 }
