@@ -22,6 +22,7 @@ namespace BigFroggInterviewTask.Model.StateLogic
         /// <summary>
         /// The state to transition into if no dropoff locations are found.
         /// </summary>
+        // Potential AI improvement: collector could drop this box anywhere and try to find another box instead
         protected override State NextStateIfNoDestinationsFound { get { return new StuckState(context); }
  }
         /// <summary>

@@ -12,7 +12,7 @@ namespace BigFroggInterviewTask.Model.StateLogic
         /// <summary>
         /// The state name.
         /// </summary>
-        public override string Name { get { return "FindPathToBoxState"; } }
+        public override string Name { get { return "FindPathToBox"; } }
 
         /// <summary>
         /// The set of unsorted boxes.

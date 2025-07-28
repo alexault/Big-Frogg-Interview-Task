@@ -7,6 +7,9 @@ using UnityEngine;
 
 namespace BigFroggInterviewTask.Controller
 {
+    /// <summary>
+    /// The controller for the game world.
+    /// </summary>
     public class WorldController : MonoBehaviour
     {
         /// <summary>
@@ -32,29 +35,53 @@ namespace BigFroggInterviewTask.Controller
             public float TickFrequency;
         };
 
-        private float tickFrequency = 0.1f;
+        /// <summary>
+        /// The frequency, in seconds, of game world frame ticks.
+        /// </summary>
+        private float tickFrequency;
+
+        /// <summary>
+        /// The time, in seconds, until the next game world frame tick.
+        /// </summary>
         private float nextTick = 0.0f;
 
+        /// <summary>
+        /// The world model backing the controller.
+        /// </summary>
         private WorldModel worldModel;
 
+        /// <summary>
+        /// The world view displaying model data.
+        /// </summary>
         [SerializeField]
         private WorldView worldView;
 
+        /// <summary>
+        /// The box view displaying model data.
+        /// </summary>
         [SerializeField]
         private BoxView boxView;
 
+        /// <summary>
+        /// The collector NPC view displaying model data.
+        /// </summary>
         [SerializeField]
         private CollectorNpcView collectorNpcView;
 
+        /// <summary>
+        /// Initialize all models and views required to run the world controller.
+        /// </summary>
         void Start()
         {
             Log.ClearAllFlags();
-            Log.EnableFlag(Log.Flag.CollectorNpcModelTrace);
 
             InitializeModels();
             InitializeViews();
         }
 
+        /// <summary>
+        /// Initialize the controller models.
+        /// </summary>
         private void InitializeModels()
         {
             Configuration config = Config.Configuration.Load<Configuration>(ConfigurationPath + ControllerConfiguration);
@@ -70,6 +97,9 @@ namespace BigFroggInterviewTask.Controller
             worldModel.AddEntity(new CollectorNpcModel(collectorNpcConfig), config.CollectorNpcStartLocation);
         }
 
+        /// <summary>
+        /// Initialize the controller views.
+        /// </summary>
         private void InitializeViews()
         {
             Dictionary<Type, EntityView> entityViewMap = new Dictionary<Type, EntityView>()
@@ -81,6 +111,9 @@ namespace BigFroggInterviewTask.Controller
             worldView.InitializeView(worldModel, entityViewMap);
         }
 
+        /// <summary>
+        /// Process world frame ticks.
+        /// </summary>
         void Update()
         {
             nextTick -= Time.deltaTime;

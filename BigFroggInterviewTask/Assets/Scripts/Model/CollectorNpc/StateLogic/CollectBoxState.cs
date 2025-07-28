@@ -1,6 +1,4 @@
 using BigFroggInterviewTask.Logging;
-using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace BigFroggInterviewTask.Model.StateLogic

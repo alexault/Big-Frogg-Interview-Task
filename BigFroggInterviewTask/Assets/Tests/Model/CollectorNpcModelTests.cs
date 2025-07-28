@@ -4,7 +4,6 @@ using BigFroggInterviewTask.Model;
 using NUnit.Framework;
 using System.Collections.Generic;
 using UnityEngine;
-using static UnityEditor.FilePathAttribute;
 
 namespace BigFroggInterviewTask.Tests.Model
 {
@@ -28,6 +27,9 @@ namespace BigFroggInterviewTask.Tests.Model
         /// </summary>
         private const string DefaultCollectorNpcConfiguration = "DefaultCollectorNpc.json";
 
+        /// <summary>
+        /// Represents a set of CollectorNpc data that can be verified by a unit test.
+        /// </summary>
         private struct CollectorNpcState
         {
             public Vector2Int? Location;

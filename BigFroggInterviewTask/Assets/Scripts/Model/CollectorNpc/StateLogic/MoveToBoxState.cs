@@ -10,7 +10,7 @@ namespace BigFroggInterviewTask.Model.StateLogic
         /// <summary>
         /// The state name.
         /// </summary>
-        public override string Name { get { return "MoveToBoxState"; } }
+        public override string Name { get { return "MoveToBox"; } }
 
         /// <summary>
         /// The fixed number of ticks it takes to complete the action.

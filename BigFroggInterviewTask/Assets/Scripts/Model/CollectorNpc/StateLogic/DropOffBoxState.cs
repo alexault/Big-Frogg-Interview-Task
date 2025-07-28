@@ -1,11 +1,10 @@
 using BigFroggInterviewTask.Logging;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 namespace BigFroggInterviewTask.Model.StateLogic
 {
     /// <summary>
-    /// Represents the state where the NPC is collecting an unsorted box.
+    /// Represents the state where the NPC is placing a box into a sorted location.
     /// </summary>
     public class DropOffBoxState : TimerState
     {
@@ -25,7 +24,7 @@ namespace BigFroggInterviewTask.Model.StateLogic
         private readonly Vector2Int DropoffLocation;
 
         /// <summary>
-        /// Constructs a CollectBox state from the location of a box.
+        /// Constructs a CollectBox state from the location of a box dropoff location.
         /// </summary>
         public DropOffBoxState(StateContext context, Vector2Int dropoffLocation) : base(context)
         {
@@ -33,7 +32,7 @@ namespace BigFroggInterviewTask.Model.StateLogic
         }
 
         /// <summary>
-        /// Check that a box exists at the target location and collect it if so.
+        /// Check that the target dropoff location is empty and place the box there if so.
         /// </summary>
         protected override ProcessResult TimerExpired(StateContext context, WorldModel world, Vector2Int npcLocation)
         {

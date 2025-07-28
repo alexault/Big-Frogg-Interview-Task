@@ -1,6 +1,4 @@
 using BigFroggInterviewTask.Model.CollectorNpc;
-using System.Collections.Generic;
-using UnityEngine;
 
 namespace BigFroggInterviewTask.Model.StateLogic
 {

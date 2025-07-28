@@ -5,6 +5,11 @@ using UnityEngine;
 
 namespace BigFroggInterviewTask.Model.CollectorNpc
 {
+    /// <summary>
+    /// An ordered list of adjacent locations representing steps in a path from one location to another.
+    /// Defined here to help distinguish between paths and simple collections of locations, as this class
+    /// uses lists of Vector2Ints to represent both.
+    /// </summary>
     using StepList = List<Vector2Int>;
 
     /// <summary>

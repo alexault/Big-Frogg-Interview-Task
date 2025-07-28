@@ -8,25 +8,49 @@ namespace BigFroggInterviewTask.View
 {
     public class WorldView : MonoBehaviour
     {
+        /// <summary>
+        /// The parent transform of all visible world objects.
+        /// </summary>
         [SerializeField]
         private Transform worldSpace;
 
+        /// <summary>
+        /// The tilemap representing the world floor.
+        /// </summary>
         [SerializeField]
         private Tilemap floorTilemap;
 
+        /// <summary>
+        /// The tilemaps representing entities in the world.
+        /// </summary>
         [SerializeField]
         private List<Tilemap> entityTilemaps;
 
+        /// <summary>
+        /// The camera displaying the world.
+        /// </summary>
         [SerializeField]
         private Camera mainCamera;
 
+        /// <summary>
+        /// The tile shown in the UI for the floor.
+        /// </summary>
         [SerializeField]
         private TileBase FloorTile;
 
+        /// <summary>
+        /// The map of entity types to views.
+        /// </summary>
         private Dictionary<Type, EntityView> entityViews;
 
+        /// <summary>
+        /// The current screen size.
+        /// </summary>
         private Vector2Int screenSize;
 
+        /// <summary>
+        /// Prepare the world view for use when the game starts.
+        /// </summary>
         public void InitializeView(WorldModel model, Dictionary<Type, EntityView> entityViews)
         {
             if (entityTilemaps.Count < Enum.GetNames(typeof(EntityView.EntityTilemapLayer)).Length)
@@ -44,6 +68,9 @@ namespace BigFroggInterviewTask.View
             DrawFloorTiles(model);
         }
 
+        /// <summary>
+        /// Update the world view to reflect any changes in the underlying model.
+        /// </summary>
         public void UpdateView(WorldModel model)
         {
             // Check if the screen size has changed
@@ -56,6 +83,9 @@ namespace BigFroggInterviewTask.View
             DrawEntityTiles(model);
         }
 
+        /// <summary>
+        /// Draw the floor tiles to the screen.
+        /// </summary>
         private void DrawFloorTiles(WorldModel model)
         {
             for (int x = 0; x < model.Size.x; x++)
@@ -67,6 +97,9 @@ namespace BigFroggInterviewTask.View
             }
         }
 
+        /// <summary>
+        /// Draw the entity tiles to the screen.
+        /// </summary>
         private void DrawEntityTiles(WorldModel model)
         {
             foreach (EntityView.EntityTilemapLayer layer in Enum.GetValues(typeof(EntityView.EntityTilemapLayer)))
@@ -103,6 +136,10 @@ namespace BigFroggInterviewTask.View
                 }
             }
         }
+
+        /// <summary>
+        /// Ensure the entire world fits within the visible area on the screen.
+        /// </summary>
         private void UpdateScreenSize(Vector2Int worldSize)
         {
             screenSize = new Vector2Int(Screen.width, Screen.height);
