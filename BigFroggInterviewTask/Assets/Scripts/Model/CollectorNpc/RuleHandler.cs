@@ -142,7 +142,7 @@ namespace BigFroggInterviewTask.Model.CollectorNpc
             else if (side == WorldSide.Right)
             {
                 // Start searching in the rightmost column and move to the left.
-                column = world.Size.y - 1;
+                column = world.Size.x - 1;
                 nextColumnDirection = -1;
             }
             else
