@@ -1,0 +1,5 @@
+{
+  "MinInterval": 20,
+  "MaxInterval": 50,
+  "BlueBoxRatio": 0.5
+}

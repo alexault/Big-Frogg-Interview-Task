@@ -1,0 +1,8 @@
+{
+  "RedBoxSortingSide": 0,
+  "BlueBoxSortingSide": 1,
+  "TicksPerStepWithoutBox": 2,
+  "TicksPerStepWithBox": 5,
+  "TicksToCollectBox": 5,
+  "TicksToDropBox": 5
+}
